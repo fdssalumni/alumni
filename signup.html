@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Sign Up</title>
+
+  <!-- SweetAlert -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .box {
+      background: #fff;
+      padding: 20px;
+      width: 340px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+
+    button {
+      background: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>Admin Sign Up</h2>
+
+  <input type="text" id="name" placeholder="Full Name">
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+  <input type="password" id="confirmPassword" placeholder="Confirm Password">
+
+  <button onclick="signup()">Create Admin Account</button>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+ const firebaseConfig = {
+    apiKey: "AIzaSyBkUmyNmP282sZoCXwmOo4ppCGW1gMg1ig",
+    authDomain: "alumnifdss.firebaseapp.com",
+    projectId: "alumnifdss",
+    storageBucket: "alumnifdss.firebasestorage.app",
+    messagingSenderId: "571771938800",
+    appId: "1:571771938800:web:463fa79c2b902b38ccdf35",
+    measurementId: "G-7VL5N3G4RL"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  function signup() {
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const confirm = document.getElementById("confirmPassword").value;
+
+    if (!name || !email || !password || !confirm) {
+      Swal.fire("Error", "All fields are required", "warning");
+      return;
+    }
+
+    if (password.length < 6) {
+      Swal.fire("Weak Password", "Password must be at least 6 characters", "warning");
+      return;
+    }
+
+    if (password !== confirm) {
+      Swal.fire("Password Mismatch", "Passwords do not match", "error");
+      return;
+    }
+
+    auth.createUserWithEmailAndPassword(email, password)
+      .then(cred => {
+        return db.collection("admins").doc(cred.user.uid).set({
+          name: name,
+          email: email,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      })
+      .then(() => {
+        Swal.fire({
+          icon: "success",
+          title: "Account Created",
+          text: "Welcome, Admin!",
+          timer: 1500,
+          showConfirmButton: false
+        }).then(() => {
+          window.location.href = "admin.html";
+        });
+      })
+      .catch(err => {
+        Swal.fire("Signup Failed", err.message, "error");
+      });
+  }
+</script>
+
+</body>
+</html>

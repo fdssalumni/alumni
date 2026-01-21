@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel</title>
+
+<!-- SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  padding: 20px;
+}
+
+.box {
+  background: #fff;
+  padding: 20px;
+  max-width: 650px;
+  margin: auto;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+textarea {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  resize: none;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 8px 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.post-btn {
+  width: 100%;
+  background: #007bff;
+  color: #fff;
+}
+.post-btn:hover{
+  background-color: blue;
+}
+.logout {
+  width: 100%;
+  background: #dc3545;
+  color: #fff;
+}
+.logout:hover{
+  background-color: red;
+}
+.add {
+  width: 100%;
+  background: lightgreen;
+  color: #fff;
+}
+.add:hover{
+  background-color: green;
+}
+
+.note {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+.admin-name {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.date {
+  font-size: 12px;
+  color: gray;
+}
+
+.actions button {
+  margin-right: 5px;
+  background: #6c757d;
+  color: #fff;
+}
+
+.actions .delete {
+  background: #dc3545;
+}
+
+.likes {
+  font-size: 14px;
+  margin-top: 5px;
+}
+a{
+  text-decoration: none;
+  color: white;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>Admin – Manage Notes</h2>
+
+  <textarea id="noteInput" placeholder="Write note here..."></textarea>
+  <button class="post-btn" id="postBtn">Post Note</button>
+  <button class="logout" id="logoutBtn">Logout</button>
+  <hr>
+  <button class="add" id="adding"><a href="signup.html">Add New Admin</a></button>
+  <div id="notes"></div>
+</div>
+
+<script type="module">
+/* ================= FIREBASE IMPORTS ================= */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import { 
+  getFirestore, collection, addDoc, onSnapshot,
+  orderBy, query, doc, updateDoc, deleteDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+/* ================= FIREBASE CONFIG ================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyBkUmyNmP282sZoCXwmOo4ppCGW1gMg1ig",
+  authDomain: "alumnifdss.firebaseapp.com",
+  projectId: "alumnifdss",
+  storageBucket: "alumnifdss.firebasestorage.app",
+  messagingSenderId: "571771938800",
+  appId: "1:571771938800:web:463fa79c2b902b38ccdf35"
+};
+
+/* ================= INITIALIZE ================= */
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* ================= DOM ELEMENTS ================= */
+const noteInput = document.getElementById("noteInput");
+const notesDiv = document.getElementById("notes");
+const postBtn = document.getElementById("postBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+
+let adminName = "Admin";
+
+/* ================= AUTH PROTECTION ================= */
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    window.location.href = "login.html";
+  }
+});
+
+/* ================= POST NOTE ================= */
+postBtn.addEventListener("click", async () => {
+  const text = noteInput.value.trim();
+
+  if (!text) {
+    Swal.fire("Empty Note", "Please write something", "warning");
+    return;
+  }
+
+  await addDoc(collection(db, "notes"), {
+    message: text,
+    adminName: adminName,
+    time: serverTimestamp(),
+    likes: 0
+  });
+
+  noteInput.value = "";
+  Swal.fire("Posted", "Note added successfully", "success");
+});
+
+/* ================= LOAD NOTES (REALTIME) ================= */
+const q = query(collection(db, "notes"), orderBy("time", "desc"));
+
+onSnapshot(q, snapshot => {
+  notesDiv.innerHTML = "";
+
+  snapshot.forEach(d => {
+    const data = d.data();
+    const date = data.time ? data.time.toDate().toLocaleString() : "Just now";
+
+    notesDiv.innerHTML += `
+      <div class="note">
+        <div class="admin-name">${data.adminName}</div>
+        <div class="date">📅 ${date}</div>
+        <p>${data.message}</p>
+
+        <div class="likes">👍 Likes: ${data.likes || 0}</div>
+
+        <div class="actions">
+          <button onclick="editNote('${d.id}', \`${data.message}\`)">Edit</button>
+          <button class="delete" onclick="deleteNote('${d.id}')">Delete</button>
+        </div>
+      </div>
+    `;
+  });
+});
+
+/* ================= EDIT NOTE ================= */
+window.editNote = async (id, oldText) => {
+  const result = await Swal.fire({
+    title: "Edit Note",
+    input: "textarea",
+    inputValue: oldText,
+    showCancelButton: true,
+    confirmButtonText: "Update"
+  });
+
+  if (result.isConfirmed) {
+    await updateDoc(doc(db, "notes", id), {
+      message: result.value
+    });
+  }
+};
+
+/* ================= DELETE NOTE ================= */
+window.deleteNote = async (id) => {
+  const result = await Swal.fire({
+    title: "Delete this note?",
+    text: "This action cannot be undone",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#dc3545"
+  });
+
+  if (result.isConfirmed) {
+    await deleteDoc(doc(db, "notes", id));
+  }
+};
+
+/* ================= LOGOUT ================= */
+logoutBtn.addEventListener("click", async () => {
+  await signOut(auth);
+  window.location.href = "login.html";
+});
+</script>
+
+</body>
+</html>

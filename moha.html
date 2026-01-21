@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Expandable Profile Cards</title>
+<script src="moha.js"></script>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: skyblue;
+  padding: 20px;
+  text-align: center;
+}
+
+.container {
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.card {
+  margin: auto;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  height: 320px;
+  width: 360px;
+  transition: all 1s ease;
+  cursor: pointer;
+}
+button{
+  background-color: aliceblue;
+  font-size: medium;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: bold;
+  border: none;
+}
+button:hover{
+  height: 30px;
+  width: 100px;
+  background-color: cadetblue;
+  transform: scale(1.3);
+  z-index: 1;
+  transition: all  ease-in-out 1.5s;
+}
+#dot {
+  position: absolute;
+  top: 2px;
+  right: 6px;
+  width: 10px;
+  height: 10px;
+  background: red;
+  border-radius: 50%;
+  display: none;
+} 
+.card:hover {
+  height: auto;
+  transform: scale(1.3);
+  z-index: 112;
+  transition: all  ease-in-out 0.5s;
+}
+
+.card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.card h3 {
+  margin: 10px;
+  text-align: center;
+}
+
+.details {
+  padding: 10px 15px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.card:hover .details {
+  opacity: 1;
+}
+
+.details p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+p{
+  text-align: start;
+}
+@media (max-width:750px) {
+  .card{
+    width: 250px;
+    height: 250px;
+    margin-top: 2%;
+  }
+  #dash{
+    width: 100%;
+    /* height: auto;
+    box-shadow: 2px 3px 4px; */
+  }
+  body{
+    background-color: lightblue;
+  }
+   .container{
+    height: 500px;
+    margin: auto;
+    margin-top: 2%;
+    display: flex;
+    flex-direction: row;
+    overflow-y: scroll;
+    }
+  
+}
+footer{
+    margin-top: 4%;
+    font-size: medium;
+    font-style: italic;
+    font-weight: bolder;
+}
+</style>
+</head>
+<body>
+  <div id="dash">
+<marquee behavior="scroll" direction="left"><h2>FDSS Alumni Team Members</h2></marquee>
+    <button onclick="home()">Home</button>
+    <button id="notifyBtn" onclick="openNotifications()" style="position:relative;">
+  🔔 Notification
+  <span id="dot"></span>
+</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+<div class="container">
+
+  <div class="card">
+    <img src="image/moh1.JPG">
+    <h3>Muhammad</h3>
+    <div class="details">
+      <p><b>Role:</b> Web Developer</p>
+      <p><b>Skills:</b> HTML, CSS, JavaScript</p>
+      <p><b>About:</b> Passionate about building modern web apps.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="image/moh2.JPG">
+    <h3>Aminu Yusuf</h3>
+    <div class="details">
+      <p><b>Role:</b> UI/UX Designer</p>
+      <p><b>Skills:</b> Figma, Adobe XD</p>
+      <p><b>About:</b> Creates clean and user-friendly designs.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="image/moh3.JPG">
+    <h3>Ahmed Lawal</h3>
+    <div class="details">
+      <p><b>Role:</b> Ethical Hacker</p>
+      <p><b>Skills:</b> Pen-Testing, Linux</p>
+      <p><b>About:</b> Focused on security and vulnerability analysis.</p>
+    </div>
+  </div>
+  
+  <div class="card">
+    <img src="image/moh4.JPG">
+    <h3>Fatima Bello</h3>
+    <div class="details">
+      <p><b>Role:</b> Mobile Developer</p>
+      <p><b>Skills:</b> Android, Flutter</p>
+      <p><b>About:</b> Builds fast and scalable mobile apps.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="image/moh1.JPG">
+    <h3>Muhammad</h3>
+    <div class="details">
+      <p><b>Role:</b> Web Developer</p>
+      <p><b>Skills:</b> HTML, CSS, JavaScript</p>
+      <p><b>About:</b> Passionate about building modern web apps.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="image/moh2.JPG">
+    <h3>Aminu Yusuf</h3>
+    <div class="details">
+      <p><b>Role:</b> UI/UX Designer</p>
+      <p><b>Skills:</b> Figma, Adobe XD</p>
+      <p><b>About:</b> Creates clean and user-friendly designs.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="image/moh3.JPG">
+    <h3>Ahmed Lawal</h3>
+    <div class="details">
+      <p><b>Role:</b> Ethical Hacker</p>
+      <p><b>Skills:</b> Pen-Testing, Linux</p>
+      <p><b>About:</b> Focused on security and vulnerability analysis.</p>
+    </div>
+    </div>
+</div>
+<Footer>
+  &copy; Muhammad lawan dalha 2026
+</Footer>
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { getFirestore, collection, query, orderBy, limit, onSnapshot } 
+  from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBkUmyNmP282sZoCXwmOo4ppCGW1gMg1ig",
+  authDomain: "alumnifdss.firebaseapp.com",
+  projectId: "alumnifdss"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const dot = document.getElementById("dot");
+
+/* Last time user checked notifications */
+let lastSeen = localStorage.getItem("lastSeenNoteTime");
+
+/* Listen to latest admin note */
+const q = query(collection(db, "notes"), orderBy("time", "desc"), limit(1));
+
+onSnapshot(q, snapshot => {
+  snapshot.forEach(doc => {
+    const noteTime = doc.data().time?.seconds;
+
+    if (!lastSeen || noteTime > lastSeen) {
+      dot.style.display = "inline-block"; // show red dot
+    }
+  });
+});
+
+/* Click notification */
+window.openNotifications = () => {
+  localStorage.setItem("lastSeenNoteTime", Math.floor(Date.now() / 1000));
+  dot.style.display = "none";
+  window.location.href = "user.html";
+};
+</script>
+</body>
+</html>

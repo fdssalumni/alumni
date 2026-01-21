@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>User Sign Up</title>
+
+<!-- SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to right, #43cea2, #185a9d);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.box {
+  background: #fff;
+  padding: 25px;
+  width: 340px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background: #28a745;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1e7e34;
+}
+
+p {
+  text-align: center;
+  margin-top: 10px;
+}
+a{
+  text-decoration: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>User Sign Up</h2>
+
+  <input type="text" id="name" placeholder="Full Name">
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+  <input type="password" id="confirm" placeholder="Confirm Password">
+
+  <button onclick="signup()">Create Account</button>
+
+  <p>Already have an account?
+    <a href="index.html">Login</a>
+  </p>
+</div>
+
+<!-- Firebase (MODULAR SDK) -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } 
+  from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import { getFirestore, doc, setDoc } 
+  from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBkUmyNmP282sZoCXwmOo4ppCGW1gMg1ig",
+  authDomain: "alumnifdss.firebaseapp.com",
+  projectId: "alumnifdss"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+window.signup = function () {
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const confirm = document.getElementById("confirm").value;
+
+  if (!name || !email || !password || !confirm) {
+    Swal.fire("Missing fields", "Please fill all fields", "warning");
+    return;
+  }
+
+  if (password !== confirm) {
+    Swal.fire("Password mismatch", "Passwords do not match", "error");
+    return;
+  }
+
+  if (password.length < 6) {
+    Swal.fire("Weak password", "Password must be at least 6 characters", "warning");
+    return;
+  }
+
+  createUserWithEmailAndPassword(auth, email, password)
+    .then(async (cred) => {
+      // Save user profile
+      await setDoc(doc(db, "users", cred.user.uid), {
+        name: name,
+        email: email,
+        createdAt: new Date()
+      });
+
+      Swal.fire({
+        icon: "success",
+        title: "Account created",
+        text: "You can now log in",
+        timer: 1500,
+        showConfirmButton: false
+      });
+
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1500);
+    })
+    .catch(error => {
+      Swal.fire("Signup failed", error.message, "error");
+    });
+};
+</script>
+
+</body>
+</html>

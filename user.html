@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Notes</title>
+
+  <!-- SweetAlert -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef1f4;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    button{
+      background-color: aliceblue;
+      font-size: medium;
+      font-family: 'Times New Roman', Times, serif;
+      font-weight: bold;
+      border: none;
+    }
+
+    .note {
+      background: #fff;
+      padding: 15px;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.1);
+    }
+
+    .admin-name {
+      font-weight: bold;
+      color: #007bff;
+    }
+
+    .date {
+      font-size: 12px;
+      color: gray;
+      margin-bottom: 5px;
+    }
+
+    .message {
+      margin: 8px 0;
+    }
+
+    .likes {
+      font-size: 14px;
+      cursor: pointer;
+      color: #007bff;
+      user-select: none;
+    }
+
+    .liked {
+      color: gray;
+      cursor: not-allowed;
+    }
+    #dash{
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+ <div id="dash">
+<marquee behavior="scroll" direction="left"><h2>FDS Alumni 📢 Latest Notes</h2></marquee>
+    <button onclick="home()">Home</button>
+    <button id="notifyBtn" style="position:relative;">
+  🔔 Notification
+</button>
+  </div>
+
+<div id="notes"></div>
+
+<!-- Firebase (MODULAR SDK v12) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import { getFirestore, collection, query, orderBy, onSnapshot, doc, updateDoc, increment } 
+    from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+  /* Firebase Config */
+  const firebaseConfig = {
+    apiKey: "AIzaSyBkUmyNmP282sZoCXwmOo4ppCGW1gMg1ig",
+    authDomain: "alumnifdss.firebaseapp.com",
+    projectId: "alumnifdss",
+    storageBucket: "alumnifdss.firebasestorage.app",
+    messagingSenderId: "571771938800",
+    appId: "1:571771938800:web:463fa79c2b902b38ccdf35"
+  };
+
+  /* Init Firebase */
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  /* Create / Get User ID */
+  let userId = localStorage.getItem("userId");
+  if (!userId) {
+    userId = "user_" + Math.random().toString(36).substring(2, 10);
+    localStorage.setItem("userId", userId);
+  }
+
+  const notesDiv = document.getElementById("notes");
+
+  /* Load Notes */
+  const q = query(collection(db, "notes"), orderBy("time", "desc"));
+
+  onSnapshot(q, snapshot => {
+    notesDiv.innerHTML = "";
+
+    snapshot.forEach(docSnap => {
+      const d = docSnap.data();
+      const liked = d.likedBy && d.likedBy[userId];
+
+      notesDiv.innerHTML += `
+        <div class="note">
+          <div class="admin-name">${d.adminName || "Admin"}</div>
+          <div class="date">
+             ${d.time ? new Date(d.time.seconds * 1000).toLocaleString() : "Just now"}
+          </div>
+          <div class="message">${d.message}</div>
+
+          <div class="likes ${liked ? "liked" : ""}" 
+               onclick="${liked ? "" : `likeNote('${docSnap.id}')`}">
+            👍 Like (${d.likes || 0})
+          </div>
+        </div>
+      `;
+    });
+  });
+
+  /* Like Note */
+  window.likeNote = async (noteId) => {
+    try {
+      const ref = doc(db, "notes", noteId);
+
+      await updateDoc(ref, {
+        [`likedBy.${userId}`]: true,
+        likes: increment(1)
+      });
+
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "You liked this note",
+        showConfirmButton: false,
+        timer: 1200
+      });
+
+    } catch (err) {
+      Swal.fire("Error", err.message, "error");
+    }
+  };
+</script>
+
+</body>
+</html>
