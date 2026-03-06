@@ -26,10 +26,11 @@
       font-weight: bold;
       border: none;
     }
-
+    #notes{
+       height: 500px;
+       overflow-y: scroll;
+    }
     .note {
-      height: 500px;
-      overflow-y: scroll;
       background: #fff;
       padding: 15px;
       margin-bottom: 12px;
@@ -66,14 +67,24 @@
     #dash{
       text-align: center;
     }
+    
+#h3{
+  font-weight: lighter;
+  font-family: 'Times New Roman', Times, serif;
+  font-display: block;
+  text-shadow: 2px 3px 4px rgb(2, 12, 6);
+  font-size: large;
+  text-transform: uppercase;
+  margin-top: -1%;
+}
   </style>
 </head>
 <body>
  <div id="dash">
-<marquee behavior="scroll" direction="left"><h2>FDS Alumni 📢 Latest Notes</h2></marquee>
+<h2 id="h3">FDS Alumni Latest updates</h2>
     <button onclick="home()">Home</button>
     <button id="notifyBtn" style="position:relative;">
-  🔔 Notification
+  🔔 updates
 </button>
   </div>
 
