@@ -13,6 +13,23 @@ body {
   padding: 20px;
   text-align: center;
 }
+#img{
+  height: 100px;
+  width: 100px;
+  border-radius: 50px;
+  float: left;
+  margin-top: 0%;
+  margin-left: -1%;
+}
+#h3{
+  font-weight: lighter;
+  font-family: 'Times New Roman', Times, serif;
+  font-display: block;
+  text-shadow: 2px 3px 4px rgb(2, 12, 6);
+  font-size: large;
+  text-transform: uppercase;
+  margin-top: -1%;
+}
 
 .container {
     margin: auto;
@@ -115,10 +132,29 @@ p{
     flex-direction: row;
     overflow-y: scroll;
     }
+    #img{
+  height: 50px;
+  width: 50px;
+  border-radius: 50px;
+  float: left;
+  margin-top: -4%;
+  margin-left: -4%;
+}
+#h3{
+  font-weight: lighter;
+  font-family: 'Times New Roman', Times, serif;
+  font-display: block;
+  text-shadow: 2px 3px 4px rgb(2, 12, 6);
+  font-size: medium;
+  text-transform: uppercase;
+  margin-top: -2%;
+}
+
   
 }
 footer{
     margin-top: 4%;
+    margin-bottom: 0%;
     font-size: medium;
     font-style: italic;
     font-weight: bolder;
@@ -127,7 +163,8 @@ footer{
 </head>
 <body>
   <div id="dash">
-<marquee behavior="scroll" direction="left"><h2>FDSS Alumni Team Members</h2></marquee>
+    <img src="image/logo.jpeg" alt="image not founds!!" id="img">
+<h3 id="h3">FDSS Alumni Team Members</h3>
     <button onclick="home()">Home</button>
     <button id="notifyBtn" onclick="openNotifications()" style="position:relative;">
   🔔 Notification
@@ -156,7 +193,7 @@ footer{
 
    <div class="card">
     <img src="image/audgen1.jpg">
-    <h3>Ahmed</h3>
+    <h3> Usman wakil Usman</h3>
     <div class="details">
       <p><b>Role:</b> Auditor general I</p>
     </div>
@@ -196,7 +233,7 @@ footer{
   </div>
 
   <div class="card">
-    <img src="image/media2.jpg">
+    <img src="image/media2.jpeg">
     <h3>Muhammad Lawan Dalha</h3>
     <div class="details">
       <p><b>Role:</b>Media and publicity II</p>
@@ -223,15 +260,31 @@ footer{
     <img src="image/oganiza.jpg">
     <h3>Muhammad's Garba Kukkuri</h3>
     <div class="details">
-      <p><b>Role:</b>Organizing director</p>
+      <p><b>Role:</b>Organizing director I</p>
+    </div>
+    </div>
+
+    <div class="card">
+    <img src="image/oganiza2.jpeg">
+    <h3>Musa garba bulama</h3>
+    <div class="details">
+      <p><b>Role:</b>Organizing director II</p>
     </div>
     </div>
 
     <div class="card">
     <img src="image/finance1.jpg">
-    <h3></h3>
+    <h3>Basiru Muhammad Ahmad</h3>
     <div class="details">
       <p><b>Role:</b>Financial secretary</p>
+    </div>
+    </div>
+
+    <div class="card">
+    <img src="image/tresur1.jpeg">
+    <h3>Muhammad Rabiu Usman</h3>
+    <div class="details">
+      <p><b>Role:</b>Treasurer I</p>
     </div>
     </div>
 
@@ -239,7 +292,7 @@ footer{
     <img src="image/tresur2.jpg">
     <h3>Abdullahi Abdu Injector</h3>
     <div class="details">
-      <p><b>Role:</b>Treasurer</p>
+      <p><b>Role:</b>Treasurer II</p>
     </div>
     </div>
 
@@ -248,6 +301,14 @@ footer{
     <h3>Fatima Abdullahi Fada</h3>
     <div class="details">
       <p><b>Role:</b>Social secretary II</p>
+    </div>
+    </div>
+
+    <div class="card">
+    <img src="image/sadvice1.jpeg">
+    <h3>Muhammad Adamu isah</h3>
+    <div class="details">
+      <p><b>Role:</b>Special adviser I</p>
     </div>
     </div>
 
@@ -266,6 +327,7 @@ footer{
       <p><b>Role:</b>ICT officer</p>
     </div>
     </div>
+
 </div>
 <Footer>
   &copy; Muhammad lawan dalha 2026
